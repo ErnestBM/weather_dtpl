@@ -27,7 +27,7 @@ services:
       KAFKA_CREATE_TOPICS: "weather_raw:1:1"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     ports:
-      - "9093:9093"
+      - "9097:9097"
     networks:
       - weather_network
     user: "0:0"
