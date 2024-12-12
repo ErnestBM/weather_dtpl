@@ -1,11 +1,8 @@
 import threading
-from dotenv import load_dotenv
-from fastapi import FastAPI
-from brokers.kafka import Consumer
-
+from dotenv import load_dotenv # type: ignore
+from fastapi import FastAPI # type: ignore
+from process.kafka import Consumer
 from config.utils import get_env_value
-# from config.db.clickhouse import ClickhouseClient
-# from classification.model import Model
 
 def consume(consumer: Consumer) -> None:
     """
@@ -22,9 +19,9 @@ load_dotenv()
 
 
 consumer = Consumer(
-    kafka_broker=get_env_value('KAFKA_BROKER'), 
-    kafka_topic=get_env_value('KAFKA_TOPIC'),
-    kafka_consumer_group=get_env_value('KAFKA_CONSUMER_GROUP'),
+    kafka_broker=get_env_value('KAFKA_BROKER'),  # type: ignore
+    kafka_topic=get_env_value('KAFKA_TOPIC'), # type: ignore
+    kafka_consumer_group=get_env_value('KAFKA_CONSUMER_GROUP'), # type: ignore
 )
 
 app = FastAPI()

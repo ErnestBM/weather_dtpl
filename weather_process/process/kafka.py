@@ -1,14 +1,8 @@
 import json
 from kafka import KafkaConsumer
-from kafka.errors import KafkaError
+from kafka.errors import KafkaError # type: ignore
 from config.logging import Logger
 from config.utils import get_env_value
-# from config.db.postgresql import PostgreSQLClient
-# from config.db.clickhouse import ClickhouseClient
-# from classification.model import Model
-import time
-
-
 
 class Consumer:
     """
@@ -19,11 +13,9 @@ class Consumer:
         self._kafka_topic = kafka_topic
         self._kafka_consumer_group = kafka_consumer_group
         self._instance = None
-        # self._db = db
-        # self.model = model
         self.logger = Logger().setup_logger(service_name='consumer')
     
-    def create_instance(self) -> KafkaConsumer:
+    def create_instance(self) -> KafkaConsumer: # type: ignore
         """
         Creates new kafka consumer and returns an instance of KafkaConsumer.
         """
@@ -33,7 +25,7 @@ class Consumer:
             bootstrap_servers=self._kafka_server,
             group_id=self._kafka_consumer_group,
             api_version=(0,9)
-        )
+        ) # type: ignore
         return self._instance
     
     def is_kafka_connected(self) -> bool:
@@ -41,7 +33,7 @@ class Consumer:
         Check if the Kafka cluster is available by fetching metadata.
         """
         try:
-            metadata = self._instance.bootstrap_connected()
+            metadata = self._instance.bootstrap_connected() # type: ignore
             if metadata:
                 self.logger.info(" [*] Kafka connection OK.")
                 return True
@@ -58,20 +50,11 @@ class Consumer:
         """
         self.logger.info(" [*] Starting Kafka consumer...")
         try:
-            for message in self._instance:
+            for message in self._instance: # type: ignore
                 self.logger.info(f" [*] Received message: {message.value}")
-
-                # start_process = time.time()
-                # data = self.model.process_message(message.value)
-                end_process = time.time()
-                
-                # self.logger.info(f" [*] Processing time: {end_process - start_process} seconds")
-
-                # self._db.execute_insert(data)
-                # self.logger.info(f" [*] Successfully written to DB: {data}")
 
         except Exception as e:
             self.logger.error(f" [x] Failed to consume message: {e}")
             self.logger.info(" [*] Stopping Kafka consumer...")
         finally:
-            self._instance.close()
+            self._instance.close() # type: ignore

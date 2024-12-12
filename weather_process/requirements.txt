@@ -1,8 +1,4 @@
 fastapi
-joblib
 kafka-python
-kafka-python
-pandas
-psycopg2-binary
 python-dotenv
-scikit-learn
+uvicorn
