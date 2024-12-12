@@ -1,8 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI # type: ignore
 from produce.celery import celery_app
 from multiprocessing import Process
 from produce.kafka import Producer
-from dotenv import load_dotenv
+from dotenv import load_dotenv # type: ignore
 from config.utils import get_env_value
 import threading
 import os
@@ -24,6 +24,7 @@ app = FastAPI()
 
 kafka_broker = get_env_value('KAFKA_BROKER')
 kafka_topic = get_env_value('KAFKA_TOPIC')
+
 
 producer = Producer(
     kafka_topic='weather_raw',

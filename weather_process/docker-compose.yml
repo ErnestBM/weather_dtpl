@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  weather-process:
+    build: .
+    environment:
+      - KAFKA_BROKER=${KAFKA_BROKER}
+      - KAFKA_TOPIC=${KAFKA_TOPIC}
+    env_file:
+      - ./.env
+    ports:
+      - "8000:8000"
+    command: uvicorn main:app --host 0.0.0.0 --port 8001
+    networks:
+      - weather_network
+
+networks:
+  weather_network:
+    driver: bridge

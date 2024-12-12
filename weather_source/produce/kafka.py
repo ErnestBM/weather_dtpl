@@ -1,24 +1,14 @@
 import json
-import math
-import random
 import time
-import csv
 import requests
 import logging
-
-from datetime import (
-    datetime, 
-    timedelta
-)
-
 from config.logging import Logger
-
 from kafka import KafkaProducer
-from kafka.errors import KafkaError
+from kafka.errors import KafkaError # type: ignore
+from config.utils import get_env_value
 
 logging.basicConfig(level=logging.DEBUG) 
 logger = logging.getLogger(__name__)
-
 
 class Producer:
     """
@@ -31,7 +21,7 @@ class Producer:
         self.logger = Logger().setup_logger(service_name='producer')
     
 
-    def create_instance(self) -> KafkaProducer:
+    def create_instance(self) -> KafkaProducer: # type: ignore
         """
         Creates new kafka producer and returns an instance of KafkaProducer.
         """
@@ -40,7 +30,7 @@ class Producer:
             bootstrap_servers=self._kafka_server,
             value_serializer=lambda v: json.dumps(v).encode('utf-8'),
             api_version=(0,11,5)
-        )
+        ) # type: ignore
         return self._instance
 
     def is_kafka_connected(self) -> bool:
@@ -48,7 +38,7 @@ class Producer:
         Check if the Kafka cluster is available by fetching metadata.
         """
         try:
-            metadata = self._instance.bootstrap_connected()
+            metadata = self._instance.bootstrap_connected() # type: ignore
             if metadata:
                 self.logger.info(" [*] Connected to Kafka cluster successfully!")
                 return True
@@ -73,23 +63,39 @@ class Producer:
         """
         try:
             self.logger.info(" [*] Starting real-time Kafka producer.")
+            api_key = get_env_value('OPENWEATHER_API_KEY')
+
+            locations = {
+                "Semarang": ("-6.9932", "110.4203"),
+                "Jakarta": ("-6.2146", "106.8451"),
+                "Bandung": ("-6.9175", "107.6191"),
+                "Surabaya": ("-7.2575", "112.7521"),
+                "Serang": ("-6.1169", "106.1539"),
+            }
+
             while True:
-                logger.debug("===debug=== Attempting to fetch weather data from OpenWeather API.")
 
-                url = f"https://api.openweathermap.org/data/2.5/weather?lat=-6.2146&lon=106.8451&appid=7794c2f0e827d159325b614c8b7945a5"
-                try:
-                    response = requests.get(url)
-                    response.raise_for_status() 
-                    response_json = response.json()
-                    logger.debug(f"Fetched weather data: {response_json}")
+                for location, coords in locations.items():
+                    lat, lon = coords
+                    logger.debug(f"=== Attempting to fetch weather data for {location}.")
 
-                    self._instance.send(self._kafka_topic, value=json.dumps(response_json))
-                    logger.debug(f"Sent weather data to Kafka topic: {self._kafka_topic}")
-                    
-                except requests.exceptions.RequestException as e:
-                    logger.error(f"Error fetching weather data: {e}")
+                    url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={api_key}"
+
+                    try:
+                        response = requests.get(url)
+                        response.raise_for_status()
+                        response_json = response.json()
+                        response_json["location"] = location
+
+                        logger.debug(f"Fetched weather data for {location}: {response_json}")
+
+                        self._instance.send(self._kafka_topic, value=response_json)  # type: ignore
+                        logger.debug(f"Sent weather data for {location} to Kafka topic: {self._kafka_topic}")
+
+                    except requests.exceptions.RequestException as e:
+                        logger.error(f"Error fetching weather data for {location}: {e}")
                 
-                time.sleep(5)
+                time.sleep(1)
 
         except Exception as e:
             pass
@@ -97,4 +103,4 @@ class Producer:
             self.logger.info(" [*] Stopping data generation.")
         finally:
             # close the kafka producer
-            self._instance.close()
+            self._instance.close() # type: ignore
