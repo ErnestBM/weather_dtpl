@@ -7,5 +7,5 @@ produce-down:
 	docker compose -f $(PRODUCE_COMPOSE_PATH) down
 
 produce-restart: 
-	stream-down 
-	stream-up
+	produce-down 
+	produce-up
