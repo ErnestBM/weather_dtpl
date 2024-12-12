@@ -27,8 +27,8 @@ kafka_topic = get_env_value('KAFKA_TOPIC')
 
 
 producer = Producer(
-    kafka_topic='weather_raw',
-    kafka_broker='kafka:9092'
+    kafka_topic=kafka_topic, # type: ignore
+    kafka_broker=kafka_broker # type: ignore
 )
 
 t_producer = threading.Thread(
