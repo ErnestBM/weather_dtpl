@@ -39,8 +39,6 @@ services:
       - BOOTSTRAP_SERVERS=${BOOTSTRAP_SERVERS}
       - KAFKA_BROKER=${KAFKA_BROKER}
       - KAFKA_TOPIC=${KAFKA_TOPIC}
-    env_file:
-      - ./.env
     depends_on:
       - kafka
     ports:
