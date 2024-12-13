@@ -19,15 +19,15 @@ services:
     depends_on:
       - zookeeper
     environment:
-      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9096,OUTSIDE://localhost:9097
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9091,OUTSIDE://localhost:9097
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
-      KAFKA_LISTENERS: INSIDE://0.0.0.0:9096,OUTSIDE://0.0.0.0:9097
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9091,OUTSIDE://0.0.0.0:9097
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_CREATE_TOPICS: "weather_raw:1:1"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     ports:
-      - "9097:9097"
+      - "9097:9091"
     networks:
       - nginx-manager_customnetwork
     user: "0:0"
