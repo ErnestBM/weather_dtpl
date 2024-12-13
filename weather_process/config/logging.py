@@ -44,6 +44,6 @@ class Logger:
         extras = {
             "service_name": service_name
         }
-        self._logger = logging.LoggerAdapter(self._logger, extras)
+        self._logger = logging.LoggerAdapter(self._logger, extras) # type: ignore
 
-        return self._logger
+        return self._logger # type: ignore

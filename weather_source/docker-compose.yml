@@ -10,7 +10,7 @@ services:
     ports:
       - "2181:2181"
     networks:
-      - weather_network
+      - nginx-manager_customnetwork
     user: "0:0"
 
   kafka:
@@ -29,7 +29,7 @@ services:
     ports:
       - "9097:9097"
     networks:
-      - weather_network
+      - nginx-manager_customnetwork
     user: "0:0"
 
   weather-source:
@@ -45,8 +45,8 @@ services:
       - "8000:8000"
     command: uvicorn main:app --host 0.0.0.0 --port 8000
     networks:
-      - weather_network
+      - nginx-manager_customnetwork
 
 networks:
-  weather_network:
-    driver: bridge
+  nginx-manager_customnetwork:
+    external: true
