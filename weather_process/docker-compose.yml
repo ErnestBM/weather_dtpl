@@ -3,6 +3,7 @@ version: "3.8"
 services:
   weather-process:
     build: .
+    container_name: weather_processor
     environment:
       - KAFKA_BROKER=${KAFKA_BROKER}
       - KAFKA_CONSUME_TOPIC=${KAFKA_CONSUME_TOPIC}
