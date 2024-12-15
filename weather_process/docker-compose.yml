@@ -14,7 +14,3 @@ services:
     command: uvicorn main:app --host 0.0.0.0 --port 8001
     networks:
       - nginx-manager_customnetwork
-
-networks:
-  nginx-manager_customnetwork:
-    external: true
