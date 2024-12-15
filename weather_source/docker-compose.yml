@@ -34,6 +34,8 @@ services:
 
   weather-source:
     build: .
+    container_name: weather_producer
+
     environment:
       - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
       - BOOTSTRAP_SERVERS=${BOOTSTRAP_SERVERS}
