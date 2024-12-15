@@ -10,8 +10,8 @@ services:
       - KAFKA_PRODUCE_TOPIC=${KAFKA_PRODUCE_TOPIC}
       - KAFKA_ZOOKEEPER_CONNECT=${KAFKA_ZOOKEEPER_CONNECT}
     ports:
-      - "8001:8001"
-    command: uvicorn main:app --host 0.0.0.0 --port 8001
+      - "8081:8081"
+    command: uvicorn main:app --host 0.0.0.0 --port 8081
     networks:
       - nginx-manager_customnetwork
 
