@@ -30,7 +30,7 @@ class Consumer:
             value_deserializer=lambda m: json.loads(m.decode('utf-8')),
             bootstrap_servers=self._kafka_server,
             group_id=self._kafka_consumer_group,
-            api_version=(0, 9)
+            api_version=(0,11,5)
         )  # type: ignore
         return self._instance
     
