@@ -12,3 +12,9 @@ services:
     ports:
       - "8081:8081"
     command: uvicorn main:app --host 0.0.0.0 --port 8081
+    networks:
+      - weather_network
+
+networks:
+  weather_network:
+    external: true
