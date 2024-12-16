@@ -11,9 +11,3 @@ services:
       - KAFKA_ZOOKEEPER_CONNECT=${KAFKA_ZOOKEEPER_CONNECT}
     ports:
       - "8081:8081"
-    networks:
-      - weather_network
-
-networks:
-  weather_network:
-    external: true
