@@ -5,10 +5,10 @@ services:
     image: confluentinc/cp-zookeeper:latest
     container_name: weather_zookeeper
     environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_CLIENT_PORT: 2182
       ZOOKEEPER_TICK_TIME: 2000
     ports:
-      - "2181:2181"
+      - "2182:2182"
     # networks:
     #   - nginx-manager_customnetwork
     user: "0:0"
@@ -19,15 +19,15 @@ services:
     depends_on:
       - zookeeper
     environment:
-      KAFKA_ADVERTISED_LISTENERS: INSIDE://weather_kafka:9096,OUTSIDE://85.209.163.202:29097
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://weather_kafka:9096,OUTSIDE://85.209.163.202:29098
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
-      KAFKA_LISTENERS: INSIDE://weather_kafka:9096,OUTSIDE://0.0.0.0:29097
+      KAFKA_LISTENERS: INSIDE://weather_kafka:9096,OUTSIDE://0.0.0.0:29098
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       KAFKA_ZOOKEEPER_CONNECT: weather_zookeeper:2181
       KAFKA_CREATE_TOPICS: "weather_raw:1:1"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     ports:
-      - "29097:29097"
+      - "29098:29098"
     # networks:
     #   - nginx-manager_customnetwork
     user: "0:0"
