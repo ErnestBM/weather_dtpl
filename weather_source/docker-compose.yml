@@ -5,12 +5,12 @@ services:
     image: confluentinc/cp-zookeeper:latest
     container_name: weather_zookeeper
     environment:
-      ZOOKEEPER_CLIENT_PORT: 2182
+      ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
     ports:
-      - "2182:2182"
-    # networks:
-    #   - nginx-manager_customnetwork
+      - "2181:2181"
+    networks:
+      - nginx-manager_customnetwork
     user: "0:0"
 
   kafka:
@@ -19,35 +19,36 @@ services:
     depends_on:
       - zookeeper
     environment:
-      KAFKA_ADVERTISED_LISTENERS: INSIDE://weather_kafka:9096,OUTSIDE://85.209.163.202:29098
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://weather_kafka:9096,OUTSIDE://85.209.163.202:19097
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
-      KAFKA_LISTENERS: INSIDE://weather_kafka:9096,OUTSIDE://0.0.0.0:29098
+      KAFKA_LISTENERS: INSIDE://weather_kafka:9096,OUTSIDE://0.0.0.0:19097
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
-      KAFKA_ZOOKEEPER_CONNECT: weather_zookeeper:2182
+      KAFKA_ZOOKEEPER_CONNECT: weather_zookeeper:2181
       KAFKA_CREATE_TOPICS: "weather_raw:1:1"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     ports:
-      - "29098:29098"
-    # networks:
-    #   - nginx-manager_customnetwork
+      - "19097:19097"
+    networks:
+      - nginx-manager_customnetwork
     user: "0:0"
 
-  # weather-source:
-  #   build: .
-  #   container_name: weather_producer
+  weather-source:
+    build: .
+    container_name: weather_producer
 
-  #   environment:
-  #     - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
-  #     - BOOTSTRAP_SERVERS=${BOOTSTRAP_SERVERS}
-  #     - KAFKA_BROKER=${KAFKA_BROKER}
-  #     - KAFKA_TOPIC=${KAFKA_TOPIC}
-  #   depends_on:
-  #     - kafka
-  #   ports:
-  #     - "8000:8000"
-  #   command: uvicorn main:app --host 0.0.0.0 --port 8000
-  # networks:
-  #   - nginx-manager_customnetwork
-# networks:
-#   nginx-manager_customnetwork:
-#     external: true
+    environment:
+      - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
+      - BOOTSTRAP_SERVERS=${BOOTSTRAP_SERVERS}
+      - KAFKA_BROKER=${KAFKA_BROKER}
+      - KAFKA_TOPIC=${KAFKA_TOPIC}
+    depends_on:
+      - kafka
+    ports:
+      - "8000:8000"
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
+    networks:
+      - nginx-manager_customnetwork
+
+networks:
+  nginx-manager_customnetwork:
+    external: true
