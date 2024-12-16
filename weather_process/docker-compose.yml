@@ -10,6 +10,6 @@ services:
       - KAFKA_PRODUCE_TOPIC=${KAFKA_PRODUCE_TOPIC}
       - KAFKA_ZOOKEEPER_CONNECT=${KAFKA_ZOOKEEPER_CONNECT}
       - KAFKA_CONSUMER_GROUP=${KAFKA_CONSUMER_GROUP}
-
+    command: uvicorn main:app --host 0.0.0.0 --port 8081
     ports:
       - "8081:8081"
