@@ -9,8 +9,8 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
     ports:
       - "2181:2181"
-    networks:
-      - nginx-manager_customnetwork
+    # networks:
+    #   - nginx-manager_customnetwork
     user: "0:0"
 
   kafka:
@@ -28,8 +28,8 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     ports:
       - "19097:19097"
-    networks:
-      - nginx-manager_customnetwork
+    # networks:
+    #   - nginx-manager_customnetwork
     user: "0:0"
 
   weather-source:
@@ -46,9 +46,8 @@ services:
     ports:
       - "8000:8000"
     command: uvicorn main:app --host 0.0.0.0 --port 8000
-    networks:
-      - nginx-manager_customnetwork
-
-networks:
-  nginx-manager_customnetwork:
-    external: true
+    # networks:
+    #   - nginx-manager_customnetwork
+# networks:
+#   nginx-manager_customnetwork:
+#     external: true
