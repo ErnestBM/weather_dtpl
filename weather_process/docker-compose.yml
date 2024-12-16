@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   weather-process:
-    image: weather_processor_image:latest
+    build: .
     container_name: weather_processor
     environment:
       - KAFKA_BROKER=${KAFKA_BROKER}
