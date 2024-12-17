@@ -2,9 +2,10 @@ import json
 import time
 import requests
 import logging
+from datetime import datetime
 from config.logging import Logger
 from kafka import KafkaProducer
-from kafka.errors import KafkaError # type: ignore
+from kafka.errors import KafkaError
 from config.utils import get_env_value
 
 logging.basicConfig(level=logging.DEBUG) 
@@ -21,7 +22,7 @@ class Producer:
         self.logger = Logger().setup_logger(service_name='producer')
     
 
-    def create_instance(self) -> KafkaProducer: # type: ignore
+    def create_instance(self) -> KafkaProducer: 
         """
         Creates new kafka producer and returns an instance of KafkaProducer.
         """
@@ -30,7 +31,7 @@ class Producer:
             bootstrap_servers=self._kafka_server,
             value_serializer=lambda v: json.dumps(v).encode('utf-8'),
             api_version=(0,11,5)
-        ) # type: ignore
+        ) 
         return self._instance
 
     def is_kafka_connected(self) -> bool:
@@ -38,7 +39,7 @@ class Producer:
         Check if the Kafka cluster is available by fetching metadata.
         """
         try:
-            metadata = self._instance.bootstrap_connected() # type: ignore
+            metadata = self._instance.bootstrap_connected()
             if metadata:
                 self.logger.info(" [*] Connected to Kafka cluster successfully!")
                 return True
@@ -66,11 +67,11 @@ class Producer:
             api_key = get_env_value('OPENWEATHER_API_KEY')
 
             locations = {
-                "Semarang": ("-6.9932", "110.4203"),
-                "Jakarta": ("-6.2146", "106.8451"),
-                "Bandung": ("-6.9175", "107.6191"),
-                "Surabaya": ("-7.2575", "112.7521"),
-                "Serang": ("-6.1169", "106.1539"),
+                "Kretek": ("-7.9923", "110.2973"),
+                "Jogjakarta": ("-7.8021", "110.3628"),
+                "Menggoran": ("-7.9525", "110.4942"),
+                "Bandara_DIY": ("-7.9007", "110.0573"),
+                "Serang": ("-7.8750", "110.3268"),
             }
 
             while True:
@@ -86,10 +87,11 @@ class Producer:
                         response.raise_for_status()
                         response_json = response.json()
                         response_json["location"] = location
+                        response_json["raw_dt"] = int(datetime.now().timestamp())
 
                         logger.debug(f"Fetched weather data for {location}: {response_json}")
 
-                        self._instance.send(self._kafka_topic, value=response_json)  # type: ignore
+                        self._instance.send(self._kafka_topic, value=response_json) 
                         logger.debug(f"Sent weather data for {location} to Kafka topic: {self._kafka_topic}")
 
                     except requests.exceptions.RequestException as e:
@@ -102,5 +104,4 @@ class Producer:
             self.logger.error(f" [X] {e}")
             self.logger.info(" [*] Stopping data generation.")
         finally:
-            # close the kafka producer
-            self._instance.close() # type: ignore
+            self._instance.close() 

@@ -1,8 +1,5 @@
 fastapi
 uvicorn
-redis
-celery
 requests
 python-dotenv
-pymongo
 kafka-python

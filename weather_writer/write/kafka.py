@@ -6,6 +6,8 @@ from config.logging import Logger
 from kafka.errors import KafkaError # type: ignore
 from pymongo import MongoClient  # type: ignore
 from pymongo.errors import PyMongoError # type: ignore
+from datetime import datetime
+
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger("writer_service")
@@ -75,13 +77,23 @@ class Consumer:
             for message in self._instance: # type: ignore
                 logger.info(f" [*] Received message: {message.value}")
 
-                self.write_to_mongodb(message.value)
+                message_value_with_timestamp = self.add_write_timestamp(message.value)
+
+                self.write_to_mongodb(message_value_with_timestamp)
 
         except Exception as e:
             logger.error(f" [x] Failed to consume message: {e}")
             logger.info(" [*] Stopping Kafka consumer...")
         finally:
             self._instance.close() # type: ignore
+
+    def add_write_timestamp(self, data: dict) -> dict:
+        """
+        Add the current timestamp to the data before writing it to MongoDB.
+        """
+        write_timestamp = int(datetime.utcnow().timestamp() * 1000) 
+        data["write_timestamp"] = write_timestamp 
+        return data
 
     def write_to_mongodb(self, data: dict) -> None:
         """
