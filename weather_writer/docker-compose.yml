@@ -4,6 +4,7 @@ services:
   weather-writer:
     build: .
     container_name: weather_writer
+    pull_policy: build
     environment:
       - KAFKA_BROKER=${KAFKA_BROKER}
       - KAFKA_CONSUME_TOPIC=${KAFKA_CONSUME_TOPIC}

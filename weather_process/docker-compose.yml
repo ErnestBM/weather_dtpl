@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-  weather-process:
+  weather-processor:
     build: .
     container_name: weather_processor
     environment:

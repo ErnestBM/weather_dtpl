@@ -3,9 +3,9 @@ import json
 import logging
 from kafka import KafkaConsumer
 from config.logging import Logger
-from kafka.errors import KafkaError # type: ignore
-from pymongo import MongoClient  # type: ignore
-from pymongo.errors import PyMongoError # type: ignore
+from kafka.errors import KafkaError 
+from pymongo import MongoClient  
+from pymongo.errors import PyMongoError 
 from datetime import datetime
 
 
@@ -26,10 +26,6 @@ class Consumer:
         self._instance = None
 
         try:
-            logger.info(mongodb_uri + " debug22")
-            logger.info(mongodb_db + " debug22")
-            logger.info(mongodb_collection + " debug22")
-
             self._mongo_client = MongoClient(self._mongodb_uri)
             logger.info(mongodb_uri + " debug22")
             self._db = self._mongo_client[self._mongodb_db]
@@ -39,7 +35,7 @@ class Consumer:
             logger.error(f" [X] Failed to connect to MongoDB: {e}")
             raise
 
-    def create_instance(self) -> KafkaConsumer: # type: ignore
+    def create_instance(self) -> KafkaConsumer: 
         """
         Creates a new KafkaConsumer instance.
         """
@@ -49,7 +45,7 @@ class Consumer:
             bootstrap_servers=self._kafka_server,
             group_id=self._kafka_consumer_group,
             api_version=(0, 11, 5)
-        ) # type: ignore
+        ) 
         return self._instance
 
     def is_kafka_connected(self) -> bool:
@@ -57,7 +53,7 @@ class Consumer:
         Check if the Kafka cluster is available by fetching metadata.
         """
         try:
-            metadata = self._instance.bootstrap_connected() # type: ignore
+            metadata = self._instance.bootstrap_connected()
             if metadata:
                 logger.info(" [*] Kafka connection OK.")
                 return True
@@ -74,7 +70,7 @@ class Consumer:
         """
         logger.info(" [*] Starting Kafka consumer...")
         try:
-            for message in self._instance: # type: ignore
+            for message in self._instance:
                 logger.info(f" [*] Received message: {message.value}")
 
                 message_value_with_timestamp = self.add_write_timestamp(message.value)
@@ -85,7 +81,7 @@ class Consumer:
             logger.error(f" [x] Failed to consume message: {e}")
             logger.info(" [*] Stopping Kafka consumer...")
         finally:
-            self._instance.close() # type: ignore
+            self._instance.close() 
 
     def add_write_timestamp(self, data: dict) -> dict:
         """
