@@ -87,8 +87,9 @@ class Consumer:
         """
         Add the current timestamp to the data before writing it to MongoDB.
         """
-        write_timestamp = int(datetime.utcnow().timestamp() * 1000) 
-        data["write_timestamp"] = write_timestamp 
+        write_timestamp = int(datetime.now().timestamp())
+        data["write_dt"] = write_timestamp 
+
         return data
 
     def write_to_mongodb(self, data: dict) -> None:
