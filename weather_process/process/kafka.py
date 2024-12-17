@@ -1,13 +1,30 @@
 import json
-import csv
-import io
 import logging
+from datetime import datetime
 from kafka import KafkaConsumer, KafkaProducer
-from kafka.errors import KafkaError  # type: ignore
+from kafka.errors import KafkaError 
 from config.logging import Logger
 
 logging.basicConfig(level=logging.DEBUG) 
 logger = logging.getLogger(__name__)
+
+def flatten_json(nested_json, parent_key='', sep='_'):
+    """
+    Flatten a nested JSON object into a flat dictionary, removing parent names from the keys.
+    """
+    items = {}
+    for key, value in nested_json.items():
+        new_key = f"{parent_key}{sep}{key}" if parent_key else key 
+
+        if isinstance(value, dict):
+            items.update(flatten_json(value, new_key, sep))
+        elif isinstance(value, list):
+            for i, sub_item in enumerate(value):
+                items.update(flatten_json(sub_item, f"{new_key}_{i}", sep))
+        else:
+            items[new_key] = value
+    return items
+
 
 class Consumer:
     """
@@ -21,7 +38,7 @@ class Consumer:
         self._producer = producer 
         self.logger = Logger().setup_logger(service_name='consumer')
     
-    def create_instance(self) -> KafkaConsumer:  # type: ignore
+    def create_instance(self) -> KafkaConsumer:  
         """
         Creates new Kafka consumer and returns an instance of KafkaConsumer.
         """
@@ -31,7 +48,7 @@ class Consumer:
             bootstrap_servers=self._kafka_server,
             group_id=self._kafka_consumer_group,
             api_version=(0,11,5)
-        )  # type: ignore
+        ) 
         return self._instance
     
     def is_kafka_connected(self) -> bool:
@@ -39,7 +56,7 @@ class Consumer:
         Check if the Kafka cluster is available by fetching metadata.
         """
         try:
-            metadata = self._instance.bootstrap_connected()  # type: ignore
+            metadata = self._instance.bootstrap_connected()
             if metadata:
                 self.logger.info(" [*] Kafka connection OK.")
                 return True
@@ -56,38 +73,24 @@ class Consumer:
         """
         self.logger.info(" [*] Starting Kafka consumer...")
         try:
-            for message in self._instance:  # type: ignore
-                self.logger.info(f" [*] Received message: {message.value}")
+            for message in self._instance:  
                 logger.info(f" [*] Received message: {message.value}")
 
-                csv_data = self.json_to_csv(message.value)
+                flattened_data = flatten_json(message.value)
 
-                logger.info(f" [*] Received message: {csv_data}")
+                flattened_data['process_dt'] = int(datetime.now().timestamp())
 
-                processed_message = {"csv_data": csv_data}
+
+                logger.info(f" [*] Received message: {flattened_data}")
+
+                processed_message = flattened_data
                 self._producer.send_message(processed_message)
 
         except Exception as e:
             self.logger.error(f" [x] Failed to consume message: {e}")
             self.logger.info(" [*] Stopping Kafka consumer...")
         finally:
-            self._instance.close()  # type: ignore
-
-    def json_to_csv(self, json_data: dict) -> str:
-        """
-        Converts a JSON object to a CSV string.
-        """
-        csv_buffer = io.StringIO()
-        csv_writer = csv.DictWriter(csv_buffer, fieldnames=json_data.keys())
-        
-        csv_writer.writeheader()
-        csv_writer.writerow(json_data)
-        
-        csv_string = csv_buffer.getvalue()
-        csv_buffer.close()
-        
-        self.logger.info(f" [*] Converted JSON to CSV:\n{csv_string}")
-        return csv_string
+            self._instance.close() 
 
 
 class Producer:
@@ -100,8 +103,7 @@ class Producer:
         self._instance = None
         self.logger = Logger().setup_logger(service_name="producer")
 
-        # Create KafkaProducer instance
-        self._instance = KafkaProducer(  # type: ignore
+        self._instance = KafkaProducer(  
             bootstrap_servers=self._kafka_server,
             api_version=(0, 11, 5),
             value_serializer=lambda v: json.dumps(v).encode("utf-8"),
@@ -113,8 +115,8 @@ class Producer:
         """
         try:
             self.logger.info(f" [*] Sending message to Kafka: {message}")
-            self._instance.send(self._kafka_topic, value=message)  # type: ignore
+            self._instance.send(self._kafka_topic, value=message) 
         except KafkaError as e:
             self.logger.error(f" [x] Failed to send message: {e}")
         finally:
-            self._instance.flush()  # type: ignore
+            self._instance.flush() 

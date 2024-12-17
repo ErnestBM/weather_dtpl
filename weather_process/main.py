@@ -1,6 +1,6 @@
 import threading
-from dotenv import load_dotenv # type: ignore
-from fastapi import FastAPI # type: ignore
+from dotenv import load_dotenv 
+from fastapi import FastAPI 
 from process.kafka import Consumer, Producer
 from config.utils import get_env_value
 
@@ -23,14 +23,14 @@ kafka_produce_topic = get_env_value('KAFKA_PRODUCE_TOPIC')
 kafka_consumer_group = get_env_value('KAFKA_CONSUMER_GROUP')
 
 producer = Producer(
-    kafka_broker=kafka_broker, # type: ignore
-    kafka_topic=kafka_produce_topic # type: ignore
+    kafka_broker=kafka_broker, 
+    kafka_topic=kafka_produce_topic
 )
 
 consumer = Consumer(
-    kafka_broker=kafka_broker, # type: ignore
-    kafka_topic=kafka_consume_topic, # type: ignore
-    kafka_consumer_group=kafka_consumer_group, # type: ignore
+    kafka_broker=kafka_broker,
+    kafka_topic=kafka_consume_topic, 
+    kafka_consumer_group=kafka_consumer_group, 
     producer=producer 
 )
 
