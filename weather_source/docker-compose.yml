@@ -10,9 +10,9 @@ services:
     ports:
       - "2181:2181"
     user: "0:0"
-    # networks:
-    #   data-station-network:
-    #     ipv4_address: 172.20.14.81
+    networks:
+      data-station-network:
+        ipv4_address: 172.20.14.81
 
   kafka:
     image: confluentinc/cp-kafka:latest
@@ -30,9 +30,9 @@ services:
     ports:
       - "19097:19097"
     user: "0:0"
-    # networks:
-    #   data-station-network:
-    #     ipv4_address: 172.20.14.82
+    networks:
+      data-station-network:
+        ipv4_address: 172.20.14.82
 
   weather-source:
     build: .
@@ -47,10 +47,10 @@ services:
     ports:
       - "8000:8000"
     command: uvicorn main:app --host 0.0.0.0 --port 8000
-#     networks:
-#       data-station-network:
-#         ipv4_address: 172.20.14.83
+    networks:
+      data-station-network:
+        ipv4_address: 172.20.14.83
 
-# networks:
-#   data-station-network:
-#     external: true
+networks:
+  data-station-network:
+    external: true
