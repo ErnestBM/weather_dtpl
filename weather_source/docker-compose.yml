@@ -34,7 +34,7 @@ services:
       data-station-network:
         ipv4_address: 172.20.14.82
 
-  weather-source:
+  weather-producer:
     build: .
     container_name: weather_producer
     environment:
