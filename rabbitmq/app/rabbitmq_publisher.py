@@ -1,13 +1,12 @@
 import pika
 import logging
-import os
 from time import sleep
 from fetcher import fetch_all_weather_data
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-RABBITMQ_QUEUE = os.environ['RABBITMQ_QUEUE']
+RABBITMQ_QUEUE = "weather_data"
 
 def start_producer():
     """
