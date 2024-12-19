@@ -11,6 +11,39 @@ from config.utils import get_env_value
 logging.basicConfig(level=logging.DEBUG) 
 logger = logging.getLogger(__name__)
 
+DUMMY_WEATHER_DATA = {
+    "coord": {"lon": 10.99, "lat": 44.34},
+    "weather": [
+        {"id": 804, "main": "Clouds", "description": "overcast clouds", "icon": "04n"}
+    ],
+    "base": "stations",
+    "main": {
+        "temp": 282.64,
+        "feels_like": 281.31,
+        "temp_min": 279.8,
+        "temp_max": 282.64,
+        "pressure": 1004,
+        "humidity": 89,
+        "sea_level": 1004,
+        "grnd_level": 937,
+    },
+    "visibility": 10000,
+    "wind": {"speed": 2.59, "deg": 192, "gust": 6.7},
+    "clouds": {"all": 100},
+    "dt": 1734637891,
+    "sys": {
+        "type": 2,
+        "id": 2075663,
+        "country": "IT",
+        "sunrise": 1734590874,
+        "sunset": 1734622720,
+    },
+    "timezone": 3600,
+    "id": 3163858,
+    "name": "Zocca",
+    "cod": 200,
+}
+
 class Producer:
     """
     Creates an instance of KafkaProducer with additional methods to produce dummy data.
@@ -75,29 +108,35 @@ class Producer:
             }
 
             while True:
+                response_json =  DUMMY_WEATHER_DATA.copy()
+                response_json["dt"] = int(datetime.now().timestamp())
+                response_json["raw_produce_dt"] = int(datetime.now().timestamp() * 1_000_000)
+                self._instance.send(self._kafka_topic, value=response_json)
+                logger.debug(f"Fetched weather data: {response_json}")
 
-                for location, coords in locations.items():
-                    lat, lon = coords
-                    logger.debug(f"=== Attempting to fetch weather data for {location}.")
 
-                    url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={api_key}"
+                # for location, coords in locations.items():
+                #     lat, lon = coords
+                #     logger.debug(f"=== Attempting to fetch weather data for {location}.")
 
-                    try:
-                        response = requests.get(url)
-                        response.raise_for_status()
-                        response_json = response.json()
-                        response_json["location"] = location
-                        response_json["raw_produce_dt"] = int(datetime.now().timestamp() * 1_000_000)
+                #     url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={api_key}"
 
-                        logger.debug(f"Fetched weather data for {location}: {response_json}")
+                #     try:
+                #         response = requests.get(url)
+                #         response.raise_for_status()
+                #         response_json = response.json()
+                #         response_json["location"] = location
+                #         response_json["raw_produce_dt"] = int(datetime.now().timestamp() * 1_000_000)
 
-                        self._instance.send(self._kafka_topic, value=response_json) 
-                        logger.debug(f"Sent weather data for {location} to Kafka topic: {self._kafka_topic}")
+                #         logger.debug(f"Fetched weather data for {location}: {response_json}")
 
-                    except requests.exceptions.RequestException as e:
-                        logger.error(f"Error fetching weather data for {location}: {e}")
+                #         self._instance.send(self._kafka_topic, value=response_json) 
+                #         logger.debug(f"Sent weather data for {location} to Kafka topic: {self._kafka_topic}")
+
+                #     except requests.exceptions.RequestException as e:
+                #         logger.error(f"Error fetching weather data for {location}: {e}")
                 
-                time.sleep(1)
+                # time.sleep(1)
 
         except Exception as e:
             pass
