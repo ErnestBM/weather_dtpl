@@ -1,3 +1,4 @@
+from datetime import datetime
 from pymongo import MongoClient
 import os
 import logging
@@ -11,6 +12,7 @@ def write_to_mongo(data: dict) -> None:
     Writes a document to MongoDB.
     """
     try:
+        data['write_dt'] = int(datetime.now().timestamp() * 1_000_000)
         client = MongoClient(MONGO_URI)
         db = client[DB_NAME]
         collection = db[COLLECTION_NAME]
