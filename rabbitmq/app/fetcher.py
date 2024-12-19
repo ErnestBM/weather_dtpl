@@ -1,6 +1,7 @@
 import requests
 import os
 import logging
+from datetime import datetime
 from typing import Dict
 
 logging.basicConfig(level=logging.INFO)
@@ -39,6 +40,8 @@ def fetch_all_weather_data(locations: Dict[str, tuple]) -> list:
         weather_data = fetch_weather_data(lat, lon)
         if weather_data:
             weather_data["location"] = location 
+            weather_data["produce_dt"] = int(datetime.now().timestamp() * 1_000_000)
+
             all_weather_data.append(weather_data)
             logging.info(f"Successfully fetched data for {location}: {weather_data}")
         else:

@@ -6,7 +6,7 @@ from fetcher import fetch_all_weather_data
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-RABBITMQ_QUEUE = "weather_data"
+RABBITMQ_QUEUE = "weather_data_v1"
 
 def start_producer():
     """

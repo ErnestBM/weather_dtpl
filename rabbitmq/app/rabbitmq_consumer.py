@@ -1,13 +1,14 @@
 import pika
 import logging
 import json
+from datetime import datetime
 from flatten import flatten_json
 from mongodb_writer import write_to_mongo
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-RABBITMQ_QUEUE = "weather_data"
+RABBITMQ_QUEUE = "weather_data_v1"
 
 def start_consumer():
     """
@@ -30,7 +31,9 @@ def start_consumer():
             message = json.loads(message_str)
             
             flat_data = flatten_json(message)
-            
+
+            flat_data['process_dt'] = int(datetime.now().timestamp() * 1_000_000)
+
             write_to_mongo(flat_data)
 
             logger.info(f" [x] Processed and written to MongoDB: {flat_data}")
