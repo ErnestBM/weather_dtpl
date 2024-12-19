@@ -78,8 +78,7 @@ class Consumer:
 
                 flattened_data = flatten_json(message.value)
 
-                flattened_data['process_dt'] = int(datetime.now().timestamp())
-
+                flattened_data['process_dt'] = int(datetime.now().timestamp() * 1_000_000)
 
                 logger.info(f" [*] Received message: {flattened_data}")
 
