@@ -1,13 +1,14 @@
 import pika
 import logging
 import json
+import os
 from flatten import flatten_json
 from mongodb_writer import write_to_mongo
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-RABBITMQ_QUEUE = "weather_data"
+RABBITMQ_QUEUE = os.getenv('RABBITMQ_QUEUE')
 
 def start_consumer():
     """
@@ -19,7 +20,7 @@ def start_consumer():
     channel.queue_declare(queue=RABBITMQ_QUEUE, durable=True)
     logger.info(" [*] Consumer connected to RabbitMQ.")
 
-    def callback(ch, method, properties, body):
+    def callback(ch, method, body):
         """
         Callback function to process received messages.
         """

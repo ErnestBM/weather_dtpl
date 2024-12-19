@@ -2,18 +2,18 @@ from pymongo import MongoClient
 import os
 import logging
 
-MONGO_URI = 'mongodb://abby.marvel:SpeakLouder@localhost:27017'
-DB_NAME = 'openweather_rabbitmq'
-COLLECTION_NAME = 'weather_v1'
+MONGODB_URI = os.getenv('MONGODB_URI')
+MONGODB_DB = os.getenv('MONGODB_DB')
+MONGODB_COLLECTION = os.getenv('MONGODB_COLLECTION')
 
 def write_to_mongo(data: dict) -> None:
     """
     Writes a document to MongoDB.
     """
     try:
-        client = MongoClient(MONGO_URI)
-        db = client[DB_NAME]
-        collection = db[COLLECTION_NAME]
+        client = MongoClient(MONGODB_URI)
+        db = client[MONGODB_DB]
+        collection = db[MONGODB_COLLECTION]
         collection.insert_one(data)
         logging.info(f"Inserted data into MongoDB: {data}")
     except Exception as e:
