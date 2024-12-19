@@ -5,7 +5,7 @@ import logging
 
 MONGO_URI = 'mongodb://abby.marvel:SpeakLouder@data-station-mongo:27017'
 DB_NAME = 'openweather_rabbitmq'
-COLLECTION_NAME = 'weather_v2'
+COLLECTION_NAME = 'weather_throughput_1'
 
 def write_to_mongo(data: dict) -> None:
     """
