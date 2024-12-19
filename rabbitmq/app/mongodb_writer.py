@@ -2,7 +2,7 @@ from pymongo import MongoClient
 import os
 import logging
 
-MONGO_URI = 'mongodb://abby.marvel:SpeakLouder@localhost:27017'
+MONGO_URI = 'mongodb://abby.marvel:SpeakLouder@85.209.163.202:27017'
 DB_NAME = 'openweather_rabbitmq'
 COLLECTION_NAME = 'weather_v1'
 
