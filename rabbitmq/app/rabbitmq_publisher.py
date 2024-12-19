@@ -8,6 +8,39 @@ logger = logging.getLogger(__name__)
 
 RABBITMQ_QUEUE = "weather_data_v1"
 
+DUMMY_WEATHER_DATA = {
+    "coord": {"lon": 10.99, "lat": 44.34},
+    "weather": [
+        {"id": 804, "main": "Clouds", "description": "overcast clouds", "icon": "04n"}
+    ],
+    "base": "stations",
+    "main": {
+        "temp": 282.64,
+        "feels_like": 281.31,
+        "temp_min": 279.8,
+        "temp_max": 282.64,
+        "pressure": 1004,
+        "humidity": 89,
+        "sea_level": 1004,
+        "grnd_level": 937,
+    },
+    "visibility": 10000,
+    "wind": {"speed": 2.59, "deg": 192, "gust": 6.7},
+    "clouds": {"all": 100},
+    "dt": 1734637891,
+    "sys": {
+        "type": 2,
+        "id": 2075663,
+        "country": "IT",
+        "sunrise": 1734590874,
+        "sunset": 1734622720,
+    },
+    "timezone": 3600,
+    "id": 3163858,
+    "name": "Zocca",
+    "cod": 200,
+}
+
 def start_producer():
     """
     Fetch weather data and send it to RabbitMQ queue.
