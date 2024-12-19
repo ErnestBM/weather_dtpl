@@ -1,5 +1,6 @@
 import pika
 import logging
+from datetime import datetime
 from time import sleep
 from fetcher import fetch_all_weather_data
 
@@ -59,25 +60,35 @@ def start_producer():
 
     try:
         while True:
-            locations = {
-                "Kretek": ("-7.9923", "110.2973"),
-                "Jogjakarta": ("-7.8021", "110.3628"),
-                "Menggoran": ("-7.9525", "110.4942"),
-                "Bandara_DIY": ("-7.9007", "110.0573"),
-                "Bantul": ("-7.8750", "110.3268"),
-            }
-            weather_data_list = fetch_all_weather_data(locations)
+            # locations = {
+            #     "Kretek": ("-7.9923", "110.2973"),
+            #     "Jogjakarta": ("-7.8021", "110.3628"),
+            #     "Menggoran": ("-7.9525", "110.4942"),
+            #     "Bandara_DIY": ("-7.9007", "110.0573"),
+            #     "Bantul": ("-7.8750", "110.3268"),
+            # }
+            # weather_data_list = fetch_all_weather_data(locations)
 
-            for weather_data in weather_data_list:
-                channel.basic_publish(
+            # for weather_data in weather_data_list:
+            #     channel.basic_publish(
+            #         exchange='',
+            #         routing_key=RABBITMQ_QUEUE,
+            #         body=str(weather_data),
+            #         properties=pika.BasicProperties(delivery_mode=2), 
+            #     )
+            #     logger.info(f" [x] Sent data: {weather_data}")
+
+            # sleep(1) 
+
+            response_json = DUMMY_WEATHER_DATA.copy()
+            response_json["raw_produce_dt"] = int(datetime.now().timestamp() * 1_000_000)
+            channel.basic_publish(
                     exchange='',
                     routing_key=RABBITMQ_QUEUE,
-                    body=str(weather_data),
+                    body=str(response_json),
                     properties=pika.BasicProperties(delivery_mode=2), 
-                )
-                logger.info(f" [x] Sent data: {weather_data}")
+            )
 
-            sleep(1) 
     except KeyboardInterrupt:
         logger.info(" [x] Stopping producer...")
     finally:
