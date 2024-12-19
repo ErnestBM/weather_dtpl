@@ -4,6 +4,7 @@ services:
   rabbitmq:
     image: rabbitmq:management
     container_name: rabbitmq
+    pull_policy: build
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -21,6 +22,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: weather_producer_rabbit
+    pull_policy: build
     environment:
       - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
       - PYTHONPATH=/app
@@ -42,6 +44,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: weather_consumer_rabbit
+    pull_policy: build
     environment:
       - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
       - PYTHONPATH=/app
