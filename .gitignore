@@ -2,3 +2,8 @@
 weather_source/.env
 weather_process/.env
 weather_writer/.env
+rabbitmq/.env
+weather_source/produceenv
+weather_process/processenv
+weather_writer/writeenv
+rabbitmq/rabbitenv
