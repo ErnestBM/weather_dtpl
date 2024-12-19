@@ -13,7 +13,8 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - weather-network
+      data-station-network:
+        ipv4_address: 172.20.14.86
 
   weather-producer-rabbit:
     build:
@@ -26,14 +27,15 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
-    networks:
-      - weather-network
     command: python app/rabbitmq_publisher.py
     healthcheck:
       test: ["CMD", "python", "-c", "import pika"]
       interval: 5s
       retries: 3
       timeout: 5s
+    networks:
+      data-station-network:
+        ipv4_address: 172.20.14.87
 
   weather-consumer-rabbit:
     build:
@@ -49,10 +51,11 @@ services:
         condition: service_healthy
       weather-producer-rabbit:
         condition: service_healthy
-    networks:
-      - weather-network
     command: python app/rabbitmq_consumer.py
+    networks:
+      data-station-network:
+        ipv4_address: 172.20.14.88
 
 networks:
-  weather-network:
-    driver: bridge
+  data-station-network:
+    external: true

@@ -30,7 +30,9 @@ def start_consumer():
             message = json.loads(message_str)
             
             flat_data = flatten_json(message)
+            
             write_to_mongo(flat_data)
+
             logger.info(f" [x] Processed and written to MongoDB: {flat_data}")
             
             ch.basic_ack(delivery_tag=method.delivery_tag)
