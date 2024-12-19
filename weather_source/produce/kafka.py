@@ -87,7 +87,7 @@ class Producer:
                         response.raise_for_status()
                         response_json = response.json()
                         response_json["location"] = location
-                        response_json["raw_dt"] = int(datetime.now().timestamp())
+                        response_json["raw_dt"] = int(datetime.now().timestamp() * 1_000_000)
 
                         logger.debug(f"Fetched weather data for {location}: {response_json}")
 
