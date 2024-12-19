@@ -2,9 +2,9 @@ from pymongo import MongoClient
 import os
 import logging
 
-MONGODB_URI = os.getenv('MONGODB_URI')
-MONGODB_DB = os.getenv('MONGODB_DB')
-MONGODB_COLLECTION = os.getenv('MONGODB_COLLECTION')
+MONGODB_URI = os.environ['MONGODB_URI']
+MONGODB_DB = os.environ['MONGODB_DB']
+MONGODB_COLLECTION = os.environ['MONGODB_COLLECTION']
 
 def write_to_mongo(data: dict) -> None:
     """

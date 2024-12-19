@@ -8,7 +8,7 @@ from mongodb_writer import write_to_mongo
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-RABBITMQ_QUEUE = os.getenv('RABBITMQ_QUEUE')
+RABBITMQ_QUEUE = os.environ['RABBITMQ_QUEUE']
 
 def start_consumer():
     """
