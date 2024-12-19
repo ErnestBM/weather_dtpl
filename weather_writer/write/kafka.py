@@ -27,7 +27,6 @@ class Consumer:
 
         try:
             self._mongo_client = MongoClient(self._mongodb_uri)
-            logger.info(mongodb_uri + " debug22")
             self._db = self._mongo_client[self._mongodb_db]
             self._collection = self._db[self._mongodb_collection]
             logger.info(" [*] Connected to MongoDB successfully.")
@@ -87,7 +86,8 @@ class Consumer:
         """
         Add the current timestamp to the data before writing it to MongoDB.
         """
-        write_timestamp = int(datetime.now().timestamp())
+        write_timestamp = int(datetime.now().timestamp() * 1_000_000)
+
         data["write_dt"] = write_timestamp 
 
         return data
