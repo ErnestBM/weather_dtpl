@@ -81,6 +81,7 @@ def start_producer():
             # sleep(1) 
 
             response_json = DUMMY_WEATHER_DATA.copy()
+            response_json["dt"] = int(datetime.now().timestamp())
             response_json["raw_produce_dt"] = int(datetime.now().timestamp() * 1_000_000)
             channel.basic_publish(
                     exchange='',
