@@ -89,6 +89,7 @@ def start_producer():
                     body=str(response_json),
                     properties=pika.BasicProperties(delivery_mode=2), 
             )
+            logger.info(f" [x] Sent data: {response_json}")
     except KeyboardInterrupt:
         logger.info(" [x] Stopping producer...")
     finally:
