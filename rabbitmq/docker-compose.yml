@@ -68,7 +68,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: weather_consumer_rabbit
+    container_name: weather_writer_rabbit
     pull_policy: build
     environment:
       - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
