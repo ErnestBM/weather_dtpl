@@ -79,6 +79,8 @@ services:
         condition: service_healthy
       weather-producer-rabbit:
         condition: service_healthy
+      weather-consumer-rabbit:
+        condition: service_healthy
     command: python app/rabbitmq_writer.py
     healthcheck:
       test: ["CMD", "python", "-c", "import pika"]
