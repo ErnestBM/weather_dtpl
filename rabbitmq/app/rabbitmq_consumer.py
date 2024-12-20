@@ -66,8 +66,8 @@ from flatten import flatten_json
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-INPUT_QUEUE = "weather_data_v1"
-OUTPUT_QUEUE = "processed_weather_data_v1"
+INPUT_QUEUE = "weather_data_v2"
+OUTPUT_QUEUE = "processed_weather_data_v2"
 
 def start_producer_consumer():
     """
