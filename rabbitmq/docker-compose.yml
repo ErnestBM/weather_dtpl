@@ -55,9 +55,39 @@ services:
       weather-producer-rabbit:
         condition: service_healthy
     command: python app/rabbitmq_consumer.py
+    healthcheck:
+      test: ["CMD", "python", "-c", "import pika"]
+      interval: 5s
+      retries: 3
+      timeout: 5s
     networks:
       data-station-network:
         ipv4_address: 172.20.14.88
+
+  weather-writer-rabbit:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: weather_consumer_rabbit
+    pull_policy: build
+    environment:
+      - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
+      - PYTHONPATH=/app
+      - RABBITMQ_HOST=rabbitmq
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      weather-producer-rabbit:
+        condition: service_healthy
+    command: python app/rabbitmq_writer.py
+    healthcheck:
+      test: ["CMD", "python", "-c", "import pika"]
+      interval: 5s
+      retries: 3
+      timeout: 5s
+    networks:
+      data-station-network:
+        ipv4_address: 172.20.14.89
 
 networks:
   data-station-network:
