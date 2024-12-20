@@ -7,7 +7,7 @@ from fetcher import fetch_all_weather_data
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-RABBITMQ_QUEUE = "weather_data_v2"
+RABBITMQ_QUEUE = "weather_data_latency_v1"
 
 DUMMY_WEATHER_DATA = {
     "coord": {"lon": 10.99, "lat": 44.34},

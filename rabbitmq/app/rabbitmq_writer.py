@@ -6,7 +6,7 @@ from mongodb_writer import write_to_mongo
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-QUEUE_NAME = "processed_weather_data_v2"
+QUEUE_NAME = "processed_weather_data_latency_v1"
 
 def start_mongo_writer():
     """
